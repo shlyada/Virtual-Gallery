@@ -1,35 +1,27 @@
-https://github.com/lbartworks/openvgal/assets/121262093/517b6b67-7a87-4f2c-8166-b5c9314ff9e9
-
-# OpenVGAL v3
-
-Open-source 3D virtual gallery platform built on [Babylon.js](https://www.babylonjs.com/). Create interactive WebGL art galleries from your images, download a ZIP, host it anywhere.
-
-**Website:** [openvgal.com](https://openvgal.com) &nbsp;|&nbsp; **Create a gallery:** [openvgal.com/create](https://openvgal.com/create) &nbsp;|&nbsp; **Live demo:** [nostromophoto.com/virtual](https://nostromophoto.com/virtual/virtual.html)
-
-![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
-
+# IPMD Virtual Gallery
 ---
 
-## What is this
+## Project Overview
 
-OpenVGAL started in June 2022 as a personal project to give myself, and anyone, a way to build interactive 3D virtual galleries programmatically. No 3D modeling skills, no gallery design, no browser code to deal with. Just organize your images in folders and the code figures out the rest.
+This project is a customized version of the OpenVGAL framework, transformed into a dynamic, managed web application. While the original framework provides the 3D environment, this repository introduces a secure Node.js backend that enables real-time content management and administrative control.
 
-Version 1 required Python and manual configuration. Version 2 brought executables and an Electron app to lower the barrier. Version 3 removes all of that. Everything happens in the browser now. You go to [openvgal.com/create](https://openvgal.com/create), drop your folders, click build, and get a self-contained ZIP that works on any web server. No installs, no dependencies, no accounts.
-
-The philosophy has not changed: **you own your gallery**. The output is plain HTML + JS files. There is no lock-in, no subscription, no tracking. Put the files on any server and they just work.
-
+**Key Features**
+* **Immersive 3D Environment:** A fully navigable virtual gallery running directly in the browser via the OpenVGAL engine.
+* **Documented REST API:** A Node.js backend (located in /backend) featuring API endpoints documented and testable via Swagger (OpenAPI).
+* **Dynamic Image Management:**
+  * Upload API: Programmatically add new artwork to the gallery.
+  * Delete API: Remove specific assets from the gallery storage to update exhibitions on the fly.
+* **Granular Authorization:** The backend is configured with distinct permission levels to ensure security:
+  * **Admin:** Full access to upload and delete gallery content.
+  * **User:** Restricted access (can only upload gallery content)
+  * **Guest:** View access to the virtual gallery only
+ 
+**Technical Architecture**
+* **Frontend:** HTML5/CSS3 and JavaScript.
+* **Backend:** Node.js with Express
+* **API Documentation:** Swagger.io
+* **Security:** Role-Based Access Control (RBAC for API Endpoints)
 ---
-
-## Quick Start
-
-1. Organize your images into folders (one folder per gallery room). Hundreds of images per folder is not recommended.
-2. Go to [openvgal.com/create](https://openvgal.com/create)
-3. Drop your image folders into the generator (each folder becomes a room)
-4. Click **Build Gallery** and preview your gallery in 3D
-5. Click **Download ZIP**
-6. Extract the ZIP on any web server and open `viewer.html`
-
-That's it. The ZIP contains everything: images, 3D room templates, PBR materials, the viewer, and configuration. Works in any subfolder, no configuration needed.
 
 ### Custom Logo
 
@@ -37,25 +29,11 @@ Replace `materials/logo.png` in the ZIP with your own image. Use white artwork o
 
 ---
 
-## What's New in v3
-
-- **Browser-based generator.** No more Python, no more executables. Everything runs in the browser at [openvgal.com/create](https://openvgal.com/create).
-- **Self-contained ZIP output.** The generated ZIP includes all assets. Drop it on a web server and it works. No CDN dependency, no external calls.
-- **Live 3D preview.** Preview your gallery directly in the generator before building.
-- **CDN architecture.** Templates and materials are served from [cdn.openvgal.com](https://cdn.openvgal.com) for the online tools. The ZIP bundles everything locally.
-- **New landing page.** [openvgal.com](https://openvgal.com) has a proper homepage now.
-- **Electron app removed.** It was a good experiment but the browser-based approach is simpler and more portable.
-- **Repository restructured.** Clean separation between site, CDN assets, server, and legacy Python code.
-
-The Python CLI still works and is available in [GitHub Releases](https://github.com/lbartworks/openvgal/releases) for those who prefer it, but the browser generator is the recommended path going forward.
-
----
-
 ## How It Works
 
 OpenVGAL uses a `building_v2.json` file to describe interconnected gallery rooms. Each room references a GLB template and contains items (artworks or doors to other rooms). The viewer loads templates, applies PBR node materials, places artwork textures at calculated positions, and handles navigation between rooms via door meshes.
 
-The browser generator at `/create` automates all of this: it takes your image folders, runs the layout algorithm, generates the JSON, fetches templates and materials from the CDN, and packages everything into a deployable ZIP.
+To initialize the platform, follow the designated instructions for launching both the frontend server and the Node.js backend within your local environment.
 
 For a deeper dive into the JSON format, the layout algorithm, the material system, and how to create custom templates, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
@@ -63,140 +41,46 @@ For a deeper dive into the JSON format, the layout algorithm, the material syste
 
 ## Repository Structure
 
-| Directory | Deploys to | Description |
-|-----------|-----------|-------------|
-| `site/` | openvgal.com | Landing page + 3D viewer + gallery generator |
-| `cdn/` | cdn.openvgal.com (Cloudflare Pages) | GLB templates + node materials + textures |
-| `server/` | api.openvgal.com (future) | API server for managed hosting |
-| `python/` | GitHub Releases | Legacy CLI for gallery generation |
-| `examples/` | Not deployed | Sample galleries for testing |
+| Directory | | Description |
+|-----------| |-------------|
+| `site/` | | Frontend: Landing page and 3D Babylon.js gallery viewer. |
+| `backend/` | Management API: Node.js server for image uploads/deletions with RBAC. |
+| `cdn/` | | Assets: GLB models, textures, and materials used by the viewer. |
+| `python/` | | Legacy Tools: Original CLI for gallery generation (Internal use only). |
+| `examples/` | | Samples: Reference galleries for testing layout and lighting. |
 
-### site/
+### Core Engine and Attribution
+This project is built upon the OpenVGAL framework. For in-depth documentation regarding the 3D engine, room generation algorithms, and legacy Python tools, please refer to the original repository: https://github.com/lbartworks/openvgal
 
-The main web application:
-- `index.html` -- Landing page
-- `viewer.html` -- 3D gallery viewer (Babylon.js)
-- `create/index.html` -- Browser-based gallery generator
-- `js/gallery-generator.js` -- Layout algorithm (ported from Python)
-- `room_builder_aux.js` -- Room building and item placement
-- `declarations.js` -- Asset path configuration
-- `overlay.js`, `overlay.html`, `overlay.css` -- Viewer UI (artwork info, navigation help, automatic tour)
-
-### cdn/
-
-Static assets served with CORS headers:
-- `templates/` -- GLB room templates (T_root, T_pannels, T_nopannels, T_small)
-- `materials/` -- Babylon.js node material JSONs, PBR textures, logo, shadow
-- `_headers` -- Cloudflare Pages CORS configuration
-
-### python/
-
-Legacy CLI tool. Generates `building_v2.json` from image folders and a CSV file. Being replaced by the browser generator.
+**Key Original Components Used**
+* site/: Contains the Babylon.js viewer and layout logic.
+* cdn/: Contains the GLB models and PBR textures.
+* python/: Original CLI for offline gallery generation.
 
 ---
 
 ## Local Development
 
-Serve the `site/` directory with any static server. For example, with Python (usually pre-installed):
+To run the full application locally, you will need to start both the frontend gallery server and the backend API service.
 
-```bash
-python -m http.server 8000 --directory site
-```
+1. Start the Virtual Gallery (Frontend) -- The gallery environment is served using Python's built-in HTTP server. Navigate to the site folder and run the following command:
 
-Or with Node.js:
+* ```python3 -m http.server 8080
 
-```bash
-npx serve site
-```
+**Access the Gallery:** Open your browser and navigate to http://localhost:8080/viewer.html
 
-Then open `http://localhost:8000` (or the port shown in your terminal) to access the landing page, viewer, and generator.
+2. Start the Management API (Backend) -- The backend handles image uploads, deletions, and authorization. Open a second terminal window, navigate to the backend folder, and start the Node server:
 
-Note: the `file://` protocol will not work in Chrome due to cross-origin iframe restrictions. You need an HTTP server.
+* ```node backend.js
 
----
-
-## Changelog
-
-**v3 (February 2026)**
-- Browser-based gallery generator at openvgal.com/create
-- Self-contained ZIP deployment (no external dependencies)
-- Live 3D preview in the generator
-- CDN for templates and materials (cdn.openvgal.com)
-- New landing page and design system
-- Electron app removed
-- Repository restructured by deployment target
-
-**v2.2 (July 2025)**
-- Babylon.js library bundled for version stability (v8.25)
-
-**v2.1 (July 2025)**
-- Overlay with artwork information, navigation help, and automatic tour
-- Redirect support for purchases/minting
-
-**v2.0 (April 2025)**
-- Electron app and standalone executables (Windows, macOS, Linux)
-- Improved lighting and gallery design
-
-**v1.4 (March 2024)**
-- New loading bar for slow connections
-- Small gallery template (T_small)
-
-**v1.0 (March 2024)**
-- Template-based architecture (GLB files instead of runtime geometry)
-- Automatic item distribution across walls and panels
-- Node materials for PBR rendering
-- Multi-hall galleries with automatic splitting for large collections
-
-**v0.x (2022-2023)**
-- Initial release with Python-only workflow
-- On-the-fly hall rendering
-- Touch device support
-- Artwork framing and metadata display
-
----
-
-## FAQ
-
-**Can I use this commercially?**
-Yes. MIT license. No restrictions on how you use the generated galleries.
-
-**Can I add shadows or baked lighting?**
-The best approach is to design halls in Blender with baked textures and load them as full GLB files (using the `resource` field in `building_v2.json`). Lightmap support is planned but not yet implemented.
-
-**Does it work on mobile?**
-Yes. Touch devices are detected automatically. Navigation uses touch controls instead of keyboard/mouse.
-
-**Can I host the gallery on any server?**
-Yes. The ZIP output is fully self-contained. Any static file server works (Apache, Nginx, Netlify, GitHub Pages, S3, etc.).
-
-**Do I need to keep the CDN connection?**
-No. The ZIP bundles all templates, materials, and assets locally. The CDN is only used by the online generator at openvgal.com/create.
-
----
-
-## TODO
-
-- [ ] Support for VR devices
-- [ ] Support for lightmaps ([early experiments](https://www.youtube.com/watch?v=mZzMPlagnQk))
-- [ ] Alternative hall templates beyond rectangular halls
-- [ ] Code to detect overlapping artwork or erroneous configurations
-- [ ] Logo upload in the generator (currently: replace `materials/logo.png` manually)
-- [x] Browser-based generator (v3)
-- [x] Self-contained ZIP deployment (v3)
-- [x] Live 3D preview in generator (v3)
-- [x] Overlay with artwork info, navigation help, automatic tour (v2.1)
-- [x] Electron app and standalone executables (v2.0, later removed)
-- [x] Template-based architecture with GLB files (v1.0)
-- [x] On-the-fly hall rendering (v0.x)
-- [x] Touch device support (v0.x)
-- [x] Artwork framing and metadata display (v0.x)
+**Access API Documentation:** Open your browser and navigate to http://localhost:3000/api-docs/
 
 ---
 
 ## License
 
-MIT License. See [LICENSE](LICENSE).
+The initial OpenVGAL Repository's License: MIT License. See [LICENSE](LICENSE).
+
+*Based on the original OpenVGAL project by lbartworks*
 
 ---
-
-*If you want to receive updates, subscribe to the [newsletter](https://nostromophoto.com/newslettter/)*
