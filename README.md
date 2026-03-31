@@ -41,8 +41,8 @@ For a deeper dive into the JSON format, the layout algorithm, the material syste
 
 ## Repository Structure
 
-| Directory | | Description |
-|-----------|-------------|
+| Directory | Description |
+| ----------- | ----------- |
 | `site/` | Frontend: Landing page and 3D Babylon.js gallery viewer. |
 | `backend/` | Management API: Node.js server for image uploads/deletions with RBAC. |
 | `cdn/` | Assets: GLB models, textures, and materials used by the viewer. |
