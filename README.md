@@ -42,12 +42,12 @@ For a deeper dive into the JSON format, the layout algorithm, the material syste
 ## Repository Structure
 
 | Directory | | Description |
-|-----------| |-------------|
-| `site/` | | Frontend: Landing page and 3D Babylon.js gallery viewer. |
+|-----------|-------------|
+| `site/` | Frontend: Landing page and 3D Babylon.js gallery viewer. |
 | `backend/` | Management API: Node.js server for image uploads/deletions with RBAC. |
-| `cdn/` | | Assets: GLB models, textures, and materials used by the viewer. |
-| `python/` | | Legacy Tools: Original CLI for gallery generation (Internal use only). |
-| `examples/` | | Samples: Reference galleries for testing layout and lighting. |
+| `cdn/` | Assets: GLB models, textures, and materials used by the viewer. |
+| `python/` | Legacy Tools: Original CLI for gallery generation (Internal use only). |
+| `examples/` | Samples: Reference galleries for testing layout and lighting. |
 
 ### Core Engine and Attribution
 This project is built upon the OpenVGAL framework. For in-depth documentation regarding the 3D engine, room generation algorithms, and legacy Python tools, please refer to the original repository: https://github.com/lbartworks/openvgal
@@ -65,13 +65,15 @@ To run the full application locally, you will need to start both the frontend ga
 
 1. Start the Virtual Gallery (Frontend) -- The gallery environment is served using Python's built-in HTTP server. Navigate to the site folder and run the following command:
 
-* ```python3 -m http.server 8080
+* ```bash
+  python3 -m http.server 8080
 
 **Access the Gallery:** Open your browser and navigate to http://localhost:8080/viewer.html
 
 2. Start the Management API (Backend) -- The backend handles image uploads, deletions, and authorization. Open a second terminal window, navigate to the backend folder, and start the Node server:
 
-* ```node backend.js
+* ```bash
+  node backend.js
 
 **Access API Documentation:** Open your browser and navigate to http://localhost:3000/api-docs/
 
