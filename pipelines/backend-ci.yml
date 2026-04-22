@@ -4,23 +4,36 @@ trigger:
       - main
   paths:
     include:
-      - backend/* # Only trigger if files in this folder change
+      - backend/*
 
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  buildConfiguration: 'Release'
-
 steps:
-- task: UseDotNet@2 # Example for a .NET backend; change based on your stack (Node, Python, etc.)
+# 1. Ensure Node.js is installed on the agent
+- task: NodeTool@0
   inputs:
-    packageType: 'sdk'
-    version: '8.x'
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
 
+# 2. Install dependencies (This fixes the "Module Not Found" error)
 - script: |
-    cd backend
-    dotnet build --configuration $(buildConfiguration)
-  displayName: 'Build Backend'
+    npm install
+  workingDirectory: 'backend'
+  displayName: 'npm install'
 
-# Add steps here to Publish Artifacts or Deploy to Azure App Service
+# 3. Archive the files into a ZIP (Ready for Azure Deployment)
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: 'backend'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/backend.zip'
+  displayName: 'Zip Backend'
+
+# 4. Upload the ZIP so Azure DevOps stores the "Build"
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'backend-dist'
+  displayName: 'Publish Artifact'
