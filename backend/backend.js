@@ -44,6 +44,16 @@ const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
         info: { title: 'Virtual Gallery Pro API', version: '1.3.0' },
+        servers: [
+            {
+                url: 'https://your-azure-app-name.azurewebsites.net', // Replace with your actual Azure URL
+                description: 'Production server'
+            },
+            {
+                url: 'http://localhost:3000',
+                description: 'Local development'
+            }
+        ],
         components: {
             securitySchemes: { ApiKeyAuth: { type: 'apiKey', in: 'header', name: 'x-api-key' } }
         },
@@ -174,6 +184,9 @@ app.delete('/delete-art/:artId', authorize(['admin']), async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log('http://localhost:3000/api-docs/');
+const PORT = process.env.PORT || 3000; // Use Azure's port or default to 3000
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    console.log(`Swagger docs available at /api-docs`);
 });
