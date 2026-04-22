@@ -4,21 +4,14 @@ trigger:
       - main
   paths:
     include:
-      - frontend/* # Only trigger if files in this folder change
+      - site/*
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: NodeTool@0
+- task: PublishBuildArtifacts@1
   inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
-
-- script: |
-    cd frontend
-    npm install
-    npm run build
-  displayName: 'Build Frontend'
-
-# Add steps here to Deploy to Azure Static Web Apps or Blob Storage
+    PathtoPublish: 'site'
+    ArtifactName: 'frontend-dist'
+  displayName: 'Publish Static Site'
