@@ -10,19 +10,16 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-# 1. Ensure Node.js is installed on the agent
 - task: NodeTool@0
   inputs:
     versionSpec: '20.x'
   displayName: 'Install Node.js'
 
-# 2. Install dependencies (This fixes the "Module Not Found" error)
 - script: |
     npm install
   workingDirectory: 'backend'
-  displayName: 'npm install'
+  displayName: 'Install Dependencies'
 
-# 3. Archive the files into a ZIP (Ready for Azure Deployment)
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: 'backend'
@@ -31,9 +28,7 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/backend.zip'
   displayName: 'Zip Backend'
 
-# 4. Upload the ZIP so Azure DevOps stores the "Build"
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'backend-dist'
-  displayName: 'Publish Artifact'
