@@ -1,0 +1,17 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - site/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'site'
+    ArtifactName: 'frontend-dist'
+  displayName: 'Publish Static Site'
