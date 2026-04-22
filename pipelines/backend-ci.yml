@@ -1,0 +1,26 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - backend/* # Only trigger if files in this folder change
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: UseDotNet@2 # Example for a .NET backend; change based on your stack (Node, Python, etc.)
+  inputs:
+    packageType: 'sdk'
+    version: '8.x'
+
+- script: |
+    cd backend
+    dotnet build --configuration $(buildConfiguration)
+  displayName: 'Build Backend'
+
+# Add steps here to Publish Artifacts or Deploy to Azure App Service
